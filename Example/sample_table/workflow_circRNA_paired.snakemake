@@ -1,0 +1,367 @@
+
+
+
+SAMPLES_1 = ["ERR315477", "ERR315455", "ERR315432", "ERR315352", "ERR315456", "ERR315391"]
+
+SAMPLES_2 = ["R_brain_3b", "R_brain_3c", "R_brain_a", "R_testis_7a", "R_testis_7b", "R_testis_7c"]
+
+SAMPLE_join = "R_brain_3b;R_brain_3c;R_brain_a;R_testis_7a;R_testis_7b;R_testis_7c;"
+
+SAMPLE_group_join = "brain;brain;brain;testis;testis;testis;"
+
+
+
+
+CLASS_testis = ["R_testis_7a", "R_testis_7b", "R_testis_7c"]
+
+CLASS_testis_2 = "R_testis_7a;R_testis_7b;R_testis_7c"
+
+CLASS_brain = ["R_brain_3b", "R_brain_3c", "R_brain_a"]
+
+CLASS_brain_2 = "R_brain_3b;R_brain_3c;R_brain_a"
+
+CLASS_testis_vs_brain = CLASS_testis + CLASS_brain
+
+SAMPLE_join_testis_vs_brain = "R_testis_7a;R_testis_7b;R_testis_7c;R_brain_3b;R_brain_3c;R_brain_a;"
+
+SAMPLE_group_join_testis_vs_brain = "testis;testis;testis;brain;brain;brain;"
+
+PAIRS = ["testis_vs_brain"]
+
+
+
+
+PROJECT_NAME = "R_hppRNA_data"
+
+WORKFLOW_NAME = "Tophat_Cufflink_Cuffdiff"
+
+WORKING_FOLDER = "/data/hppRNA_data"
+
+HPPRNA_SOFTWARE_FOLDER = "/data/hppRNA_software"
+
+ADAPTER_SEQUENCE = "AGATCGGAAGAGC"
+
+ASSEMBLY_VERSION = "hg19"
+
+GATK_FOLDER = "/data/hppRNA_software/GATK"
+
+
+
+GTF = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/genes.selected.pc.gtf"
+
+MAP_FILE = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/transcript_to_gene.txt"
+
+
+
+
+
+
+FASTQC_OUTPUT_FOLDER = WORKING_FOLDER + "/standard_results/FastQC"
+
+CONTAMINANT_LIST_FILE = HPPRNA_SOFTWARE_FOLDER + "/FastQC/Configuration/contaminant_list.txt"
+
+ADAPTER_LIST_FILE = HPPRNA_SOFTWARE_FOLDER + "/FastQC/Configuration/adapter_list.txt"
+
+PRINSEQ_LITE_FILE = HPPRNA_SOFTWARE_FOLDER + "/prinseq-lite-0.20.4/prinseq-lite.pl"
+
+WIGTOBIGWIG = HPPRNA_SOFTWARE_FOLDER + "/wig2bigwig/wigToBigWig"
+
+CHROM_SIZES = HPPRNA_SOFTWARE_FOLDER + "/wig2bigwig/" + ASSEMBLY_VERSION + ".chrom.sizes"
+
+GENOME_FA_FILE = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/genome.fa"
+
+REPEAT_GTF = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/repeats.gtf"
+
+TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE = WORKING_FOLDER + "/standard_results/" + WORKFLOW_NAME + "/Index/" + ASSEMBLY_VERSION
+
+TOPHAT_LNCRNA_INDEX_FILE = WORKING_FOLDER + "/standard_results/lncRNA_denovo/lncRNA_detection/Index/" + ASSEMBLY_VERSION
+
+EXTRACT_UNIQUE = HPPRNA_SOFTWARE_FOLDER + "/BlackOPs_v1.06/perl/extract_unique.pl"
+
+FUSIONCATCHER_DATA_FOLDER = HPPRNA_SOFTWARE_FOLDER + "/FusionCatcher/fusioncatcher/data/current/"
+
+THREADS = 15
+
+TOPHAT_MATE_INNER_DIST = 50
+
+TOPHAT_MATE_STD_DEV = 20
+
+TOPHAT_CUFFLINKS_CUFFDIFF_LIBRARY_TYPE = "fr-unstranded"
+
+SUBREAD_MINFRAGLENGTH = 50
+
+SUBREAD_MAXFRAGLENGTH = 600
+
+SUBREAD_PE_ORIENTATION = "fr"
+
+FEATURECOUNTS_STRANDSPECIFIC = "0"
+
+BOWTIE_HISAT_MININS = 0
+
+BOWTIE_HISAT_MAXINS = 800
+
+BOWTIE_HISAT_PE_ORIENTATION = "--fr"
+
+KALLISTO_L = 200
+
+KALLISTO_S = 20
+
+RSEM_FRAGMENT_LENGTH_MIN = 1
+
+RSEM_FRAGMENT_LENGTH_MAX = 1000
+
+RSEM_FRAGMENT_LENGTH_MEAN = -1
+
+RSEM_FRAGMENT_LENGTH_SD = 0
+
+RSEM_FORWARD_PROB = 0.5
+
+BOWTIE_HISAT_NOFW_NORC = " "
+
+EXPRESS_ORIENTATION = " "
+
+DCC_STRAND = "-N"
+
+
+
+
+
+rule all:
+    input:
+        expand("{work_folder}/standard_results/Raw_FASTQ/{sample}.R1.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Raw_FASTQ/{sample}.R2.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}.R1_fastqc.zip", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}.R1_fastqc.html", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}.R2_fastqc.zip", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}.R2_fastqc.html", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Processed_FASTQ/{sample}_1.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Processed_FASTQ/{sample}_2.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}_1_fastqc.zip", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}_1_fastqc.html", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}_2_fastqc.zip", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}_2_fastqc.html", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Fasta/{sample}_1.collapser.fasta", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Fasta/{sample}_2.collapser.fasta", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/joint_mapping/{sample}.Aligned.sortedByCoord.out.bam", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/joint_mapping/{sample}.Aligned.sortedByCoord.out.bam.bai", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/joint_mapping/{sample}.Chimeric.out.junction", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/mate1_mapping/{sample}.Chimeric.out.junction", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/mate2_mapping/{sample}.Chimeric.out.junction", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/CircRNA/DCC/CircCoordinates", work_folder = WORKING_FOLDER),
+        expand("{work_folder}/standard_results/CircRNA/DCC/CircRNACount", work_folder = WORKING_FOLDER),
+        expand("{work_folder}/standard_results/CircRNA/DCC/CircSkipJunctions", work_folder = WORKING_FOLDER),
+        expand("{work_folder}/standard_results/CircRNA/DCC/LinearCount", work_folder = WORKING_FOLDER),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/{pair}/CircCoordinates", work_folder = WORKING_FOLDER, pair = PAIRS),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/{pair}/CircRNACount", work_folder = WORKING_FOLDER, pair = PAIRS),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/{pair}/CircSkipJunctions", work_folder = WORKING_FOLDER, pair = PAIRS),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/{pair}/LinearCount", work_folder = WORKING_FOLDER, pair = PAIRS),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/{pair}/{project}.STAR_DCC_circTest.{pair}.circTest.csv", work_folder = WORKING_FOLDER, pair = PAIRS, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/{pair}/{project}.STAR_DCC_circTest.{pair}.circTest.txt", work_folder = WORKING_FOLDER, pair = PAIRS, project = PROJECT_NAME)
+
+
+
+
+rule rename_fastq:
+        input:
+                R1=expand("{work_folder}/{sample}.R1.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_1), 
+                R2=expand("{work_folder}/{sample}.R2.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_1)
+        output:
+                R1=expand("{work_folder}/standard_results/Raw_FASTQ/{sample}.R1.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+                R2=expand("{work_folder}/standard_results/Raw_FASTQ/{sample}.R2.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2)
+        run:
+                shell("mkdir -p {WORKING_FOLDER}/standard_results")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Raw_FASTQ")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Processed_FASTQ")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Fasta")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/FastQC")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/SNP")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Fusion_gene")
+                for i in range(len(SAMPLES_1)):
+                    left_in = "".join(["{WORKING_FOLDER}/", SAMPLES_1[i], ".R1.fastq"])
+                    right_in = "".join(["{WORKING_FOLDER}/", SAMPLES_1[i], ".R2.fastq"])
+                    left_out = "".join(["{WORKING_FOLDER}/standard_results/Raw_FASTQ/", SAMPLES_2[i], ".R1.fastq"])
+                    right_out = "".join(["{WORKING_FOLDER}/standard_results/Raw_FASTQ/", SAMPLES_2[i], ".R2.fastq"])
+                    cmd_left = " ".join(["cp", left_in, left_out])
+                    cmd_right = " ".join(["cp", right_in, right_out])
+                    shell(cmd_left)
+                    shell(cmd_right)
+
+
+
+rule fastqc_fisrt:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Raw_FASTQ/{smp}.R1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Raw_FASTQ/{smp}.R2.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}.R1_fastqc.zip",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}.R1_fastqc.html",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}.R2_fastqc.zip",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}.R2_fastqc.html"
+    threads: THREADS
+    shell: """
+           fastqc -o {FASTQC_OUTPUT_FOLDER} --contaminants {CONTAMINANT_LIST_FILE} --adapters {ADAPTER_LIST_FILE} --threads {threads} {input.R1}
+           fastqc -o {FASTQC_OUTPUT_FOLDER} --contaminants {CONTAMINANT_LIST_FILE} --adapters {ADAPTER_LIST_FILE} --threads {threads} {input.R2}
+    """
+
+
+
+rule cutadapt:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Raw_FASTQ/{smp}.R1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Raw_FASTQ/{smp}.R2.fastq"
+    output:
+        R1="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.R1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.R2.fastq"
+    shell: """
+           cutadapt -a {ADAPTER_SEQUENCE} -A {ADAPTER_SEQUENCE} -m 20 -o {output.R1} -p {output.R2} {input.R1} {input.R2}
+           """
+
+
+
+rule prinseq:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.R1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.R2.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_1.fastq",
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_2.fastq",
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_1_singletons.fastq",
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_2_singletons.fastq"
+    shell: """
+           perl {PRINSEQ_LITE_FILE} -trim_qual_left 20 -trim_qual_right 20 -min_len 20 -min_qual_mean 20 -ns_max_n 2 -out_format 3 -no_qual_header -fastq {input.R1} -fastq2 {input.R2} -out_good {WORKING_FOLDER}/standard_results/Processed_FASTQ/{wildcards.smp} -out_bad null
+           """
+
+
+
+rule fastqc_second:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_2.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}_1_fastqc.zip",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}_1_fastqc.html",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}_2_fastqc.zip",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}_2_fastqc.html"
+    threads: THREADS
+    shell: """
+           fastqc -o {FASTQC_OUTPUT_FOLDER} --contaminants {CONTAMINANT_LIST_FILE} --adapters {ADAPTER_LIST_FILE} --threads {threads} {input.R1}
+           fastqc -o {FASTQC_OUTPUT_FOLDER} --contaminants {CONTAMINANT_LIST_FILE} --adapters {ADAPTER_LIST_FILE} --threads {threads} {input.R2}
+           """
+
+
+
+rule fastx_collapser:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_2.fastq"
+    output:
+        R1="{WORKING_FOLDER}/standard_results/Fasta/{smp}_1.collapser.fasta",
+        R2="{WORKING_FOLDER}/standard_results/Fasta/{smp}_2.collapser.fasta",
+    shell: """
+           fastx_collapser -Q 33 -v -i {input.R1} -o {output.R1}
+           fastx_collapser -Q 33 -v -i {input.R2} -o {output.R2}
+           """
+
+
+
+
+rule STAR_index:
+    input:
+        GENOME_FA_FILE
+    output:
+        "{WORKING_FOLDER}/standard_results/CircRNA/Index/SA",
+        "{WORKING_FOLDER}/standard_results/CircRNA/Index/SAindex"
+    shell: """
+           mkdir -p {WORKING_FOLDER}/standard_results/CircRNA
+           mkdir -p {WORKING_FOLDER}/standard_results/CircRNA/Mapping
+           mkdir -p {WORKING_FOLDER}/standard_results/CircRNA/CircTest
+           mkdir -p {WORKING_FOLDER}/standard_results/CircRNA/Index
+           STAR --runMode genomeGenerate --genomeDir {WORKING_FOLDER}/standard_results/CircRNA/Index --genomeFastaFiles {input} --runThreadN 1
+           """
+
+
+
+rule star_joint_mapping:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_2.fastq",
+        index_1="{WORKING_FOLDER}/standard_results/CircRNA/Index/SA",
+        index_2="{WORKING_FOLDER}/standard_results/CircRNA/Index/SAindex"
+    output:
+        "{WORKING_FOLDER}/standard_results/CircRNA/Mapping/{smp}/joint_mapping/{smp}.Aligned.sortedByCoord.out.bam",
+        "{WORKING_FOLDER}/standard_results/CircRNA/Mapping/{smp}/joint_mapping/{smp}.Chimeric.out.junction",
+        "{WORKING_FOLDER}/standard_results/CircRNA/Mapping/{smp}/mate1_mapping/{smp}.Chimeric.out.junction",
+        "{WORKING_FOLDER}/standard_results/CircRNA/Mapping/{smp}/mate2_mapping/{smp}.Chimeric.out.junction"
+    threads: THREADS
+    shell: """
+           mkdir -p {WORKING_FOLDER}/standard_results/CircRNA/Mapping/{wildcards.smp}
+           mkdir -p {WORKING_FOLDER}/standard_results/CircRNA/Mapping/{wildcards.smp}/joint_mapping
+           mkdir -p {WORKING_FOLDER}/standard_results/CircRNA/Mapping/{wildcards.smp}/mate1_mapping
+           mkdir -p {WORKING_FOLDER}/standard_results/CircRNA/Mapping/{wildcards.smp}/mate2_mapping
+           STAR --runThreadN {threads} --genomeDir {WORKING_FOLDER}/standard_results/CircRNA/Index --outSAMtype BAM SortedByCoordinate --readFilesIn {input.R1} {input.R2} --outFileNamePrefix {WORKING_FOLDER}/standard_results/CircRNA/Mapping/{wildcards.smp}/joint_mapping/{wildcards.smp}. --outReadsUnmapped Fastx --outSJfilterOverhangMin 15 15 15 15 --alignSJoverhangMin 15 --alignSJDBoverhangMin 15 --outFilterMultimapNmax 20 --outFilterScoreMin 1 --outFilterMatchNmin 1 --outFilterMismatchNmax 2 --chimSegmentMin 15 --chimScoreMin 15 --chimScoreSeparation 10 --chimJunctionOverhangMin 15
+           STAR --runThreadN {threads} --genomeDir {WORKING_FOLDER}/standard_results/CircRNA/Index --outSAMtype None --readFilesIn {input.R1} --outFileNamePrefix {WORKING_FOLDER}/standard_results/CircRNA/Mapping/{wildcards.smp}/mate1_mapping/{wildcards.smp}. --outReadsUnmapped Fastx --outSJfilterOverhangMin 15 15 15 15 --alignSJoverhangMin 15 --alignSJDBoverhangMin 15 --seedSearchStartLmax 30 --outFilterMultimapNmax 20 --outFilterScoreMin 1 --outFilterMatchNmin 1 --outFilterMismatchNmax 2 --chimSegmentMin 15 --chimScoreMin 15 --chimScoreSeparation 10 --chimJunctionOverhangMin 15
+           STAR --runThreadN {threads} --genomeDir {WORKING_FOLDER}/standard_results/CircRNA/Index --outSAMtype None --readFilesIn {input.R2} --outFileNamePrefix {WORKING_FOLDER}/standard_results/CircRNA/Mapping/{wildcards.smp}/mate2_mapping/{wildcards.smp}. --outReadsUnmapped Fastx --outSJfilterOverhangMin 15 15 15 15 --alignSJoverhangMin 15 --alignSJDBoverhangMin 15 --seedSearchStartLmax 30 --outFilterMultimapNmax 20 --outFilterScoreMin 1 --outFilterMatchNmin 1 --outFilterMismatchNmax 2 --chimSegmentMin 15 --chimScoreMin 15 --chimScoreSeparation 10 --chimJunctionOverhangMin 15
+           """
+
+
+
+rule index_bam:
+    input:
+        "{WORKING_FOLDER}/standard_results/CircRNA/Mapping/{smp}/joint_mapping/{smp}.Aligned.sortedByCoord.out.bam"
+    output:
+        "{WORKING_FOLDER}/standard_results/CircRNA/Mapping/{smp}/joint_mapping/{smp}.Aligned.sortedByCoord.out.bam.bai"
+    threads: THREADS
+    shell: """
+           samtools index {input}
+           """
+
+
+
+rule DCC:
+    input:
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/joint_mapping/{sample}.Aligned.sortedByCoord.out.bam", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/joint_mapping/{sample}.Aligned.sortedByCoord.out.bam.bai", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/joint_mapping/{sample}.Chimeric.out.junction", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/mate1_mapping/{sample}.Chimeric.out.junction", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/mate2_mapping/{sample}.Chimeric.out.junction", work_folder = WORKING_FOLDER, sample = SAMPLES_2)
+    output:
+        "{WORKING_FOLDER}/standard_results/CircRNA/DCC/CircCoordinates",
+        "{WORKING_FOLDER}/standard_results/CircRNA/DCC/CircRNACount",
+        "{WORKING_FOLDER}/standard_results/CircRNA/DCC/CircSkipJunctions",
+        "{WORKING_FOLDER}/standard_results/CircRNA/DCC/LinearCount"
+    threads: THREADS
+    shell: """
+           mkdir -p {WORKING_FOLDER}/standard_results/CircRNA/DCC
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/generate_DCC_samplesheet_all.pl -d {WORKING_FOLDER}/standard_results/CircRNA/Mapping -s "{SAMPLE_join}" -n joint -o {WORKING_FOLDER}/standard_results/CircRNA/DCC/samplesheet
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/generate_DCC_samplesheet_all.pl -d {WORKING_FOLDER}/standard_results/CircRNA/Mapping -s "{SAMPLE_join}" -n mate1 -o {WORKING_FOLDER}/standard_results/CircRNA/DCC/mate1
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/generate_DCC_samplesheet_all.pl -d {WORKING_FOLDER}/standard_results/CircRNA/Mapping -s "{SAMPLE_join}" -n mate2 -o {WORKING_FOLDER}/standard_results/CircRNA/DCC/mate2
+           cd {WORKING_FOLDER}/standard_results/CircRNA/DCC
+           DCC @samplesheet -mt1 @mate1 -mt2 @mate2 -O {WORKING_FOLDER}/standard_results/CircRNA/DCC -T {threads} -D {DCC_STRAND} -R {REPEAT_GTF} -an {GTF} -Pi -F -M -Nr 5 3 -fg -G -A {GENOME_FA_FILE}
+           """
+
+
+
+rule circRNA_testis_vs_brain:
+    input:
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/joint_mapping/{sample}.Aligned.sortedByCoord.out.bam", work_folder = WORKING_FOLDER, sample = CLASS_testis_vs_brain),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/joint_mapping/{sample}.Aligned.sortedByCoord.out.bam.bai", work_folder = WORKING_FOLDER, sample = CLASS_testis_vs_brain),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/joint_mapping/{sample}.Chimeric.out.junction", work_folder = WORKING_FOLDER, sample = CLASS_testis_vs_brain),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/mate1_mapping/{sample}.Chimeric.out.junction", work_folder = WORKING_FOLDER, sample = CLASS_testis_vs_brain),
+        expand("{work_folder}/standard_results/CircRNA/Mapping/{sample}/mate2_mapping/{sample}.Chimeric.out.junction", work_folder = WORKING_FOLDER, sample = CLASS_testis_vs_brain)
+    output:
+        expand("{work_folder}/standard_results/CircRNA/CircTest/testis_vs_brain/CircCoordinates", work_folder = WORKING_FOLDER),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/testis_vs_brain/CircRNACount", work_folder = WORKING_FOLDER),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/testis_vs_brain/CircSkipJunctions", work_folder = WORKING_FOLDER),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/testis_vs_brain/LinearCount", work_folder = WORKING_FOLDER),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/testis_vs_brain/{project}.STAR_DCC_circTest.testis_vs_brain.circTest.csv", work_folder = WORKING_FOLDER, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/CircRNA/CircTest/testis_vs_brain/{project}.STAR_DCC_circTest.testis_vs_brain.circTest.txt", work_folder = WORKING_FOLDER, project = PROJECT_NAME)
+    threads: THREADS
+    shell: """
+           mkdir -p {WORKING_FOLDER}/standard_results/CircRNA/CircTest/testis_vs_brain
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/generate_DCC_samplesheet.pl -d {WORKING_FOLDER}/standard_results/CircRNA/Mapping -c "{CLASS_testis_2}" -t "{CLASS_brain_2}" -n joint -o {WORKING_FOLDER}/standard_results/CircRNA/CircTest/testis_vs_brain/samplesheet
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/generate_DCC_samplesheet.pl -d {WORKING_FOLDER}/standard_results/CircRNA/Mapping -c "{CLASS_testis_2}" -t "{CLASS_brain_2}" -n mate1 -o {WORKING_FOLDER}/standard_results/CircRNA/CircTest/testis_vs_brain/mate1
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/generate_DCC_samplesheet.pl -d {WORKING_FOLDER}/standard_results/CircRNA/Mapping -c "{CLASS_testis_2}" -t "{CLASS_brain_2}" -n mate2 -o {WORKING_FOLDER}/standard_results/CircRNA/CircTest/testis_vs_brain/mate2
+           cd {WORKING_FOLDER}/standard_results/CircRNA/CircTest/testis_vs_brain
+           DCC @samplesheet -mt1 @mate1 -mt2 @mate2 -O {WORKING_FOLDER}/standard_results/CircRNA/CircTest/testis_vs_brain -T {threads} -D {DCC_STRAND} -R {REPEAT_GTF} -an {GTF} -Pi -F -M -Nr 5 3 -fg -G -A {GENOME_FA_FILE}
+           R --slave --vanilla --args {WORKING_FOLDER}/standard_results/CircRNA/CircTest/testis_vs_brain 3 3 testis brain {PROJECT_NAME} < {HPPRNA_SOFTWARE_FOLDER}/my_R/circTest.R
+           """

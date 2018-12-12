@@ -1,0 +1,48 @@
+Project	hppRNA_data								
+Seq	RNA-Seq								
+Type	Single-End								
+Adaptor	AGATCGGAAGAGC								
+Analysis_type	protein-coding								
+Core_workflow	2								
+Fusion	No								
+SNP	No								
+Species	Mouse								
+Assembly_Version	mm10								
+Working_FOLDER	/data/hppRNA_data								
+Software_FOLDER	/data/hppRNA_software								
+GATK_FOLDER	/data/hppRNA_software/GATK								
+Thread	15								
+Tophat: mate-inner-dist	50								
+Tophat: mate-std-dev	20								
+Tophat/Cufflinks/Cuffdiff: library-type	fr-unstranded								
+Subread: minFragLength	50								
+Subread: maxFragLength	600								
+Subread: PE_orientation	fr								
+featureCounts: strandSpecific	0								
+RSEM: fragment-length-min	1								
+RSEM: fragment-length-max	1000								
+RSEM: fragment-length-mean	-1								
+RSEM: fragment-length-sd	0								
+RSEM: forward-prob	0.5								
+Bowtie/HISAT: minins	0								
+Bowtie/HISAT: maxins	800								
+Bowtie/HISAT: PE_orientation	--fr								
+Bowtie/HISAT: nofw/norc									
+eXpress: orientation									
+Kallisto: l	200								
+Kallisto: s	20								
+DCC: strand	-N								
+#Sample_title	Project	Seq	Type	Species	File	Name	Length	Replicate	Platform
+Sample	hppRNA_data_single	RNA-Seq	Single-End	Mouse	S517N701	Kidney_1	76	Kidney	Illumina 1.9
+Sample	hppRNA_data_single	RNA-Seq	Single-End	Mouse	S517N702	Kidney_2	76	Kidney	Illumina 1.9
+Sample	hppRNA_data_single	RNA-Seq	Single-End	Mouse	S517N703	Kidney_3	76	Kidney	Illumina 1.9
+Sample	hppRNA_data_single	RNA-Seq	Single-End	Mouse	S517N704	Lung_1	76	Lung	Illumina 1.9
+Sample	hppRNA_data_single	RNA-Seq	Single-End	Mouse	S517N705	Lung_2	76	Lung	Illumina 1.9
+Sample	hppRNA_data_single	RNA-Seq	Single-End	Mouse	S517N706	Lung_3	76	Lung	Illumina 1.9
+Sample	hppRNA_data_single	RNA-Seq	Single-End	Mouse	S502N701	Spleen_1	76	Spleen	Illumina 1.9
+Sample	hppRNA_data_single	RNA-Seq	Single-End	Mouse	S503N704	Spleen_2	76	Spleen	Illumina 1.9
+Sample	hppRNA_data_single	RNA-Seq	Single-End	Mouse	S503N705	Spleen_3	76	Spleen	Illumina 1.9
+#DEG	Control	Case							
+DEG	Kidney	Lung							
+DEG	Kidney	Spleen							
+DEG	Lung	Spleen							

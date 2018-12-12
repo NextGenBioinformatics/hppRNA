@@ -1,0 +1,599 @@
+
+
+
+SAMPLES_1 = ["S517N701", "S517N702", "S517N703", "S517N704", "S517N705", "S517N706", "S502N701", "S503N704", "S503N705"]
+
+SAMPLES_2 = ["R_Kidney_1", "R_Kidney_2", "R_Kidney_3", "R_Lung_1", "R_Lung_2", "R_Lung_3", "R_Spleen_1", "R_Spleen_2", "R_Spleen_3"]
+
+SAMPLE_join = "R_Kidney_1;R_Kidney_2;R_Kidney_3;R_Lung_1;R_Lung_2;R_Lung_3;R_Spleen_1;R_Spleen_2;R_Spleen_3;"
+
+SAMPLE_group_join = "Kidney;Kidney;Kidney;Lung;Lung;Lung;Spleen;Spleen;Spleen;"
+
+
+
+
+CLASS_Lung = ["R_Lung_1", "R_Lung_2", "R_Lung_3"]
+
+CLASS_Lung_2 = "R_Lung_1;R_Lung_2;R_Lung_3"
+
+CLASS_Kidney = ["R_Kidney_1", "R_Kidney_2", "R_Kidney_3"]
+
+CLASS_Kidney_2 = "R_Kidney_1;R_Kidney_2;R_Kidney_3"
+
+CLASS_Spleen = ["R_Spleen_1", "R_Spleen_2", "R_Spleen_3"]
+
+CLASS_Spleen_2 = "R_Spleen_1;R_Spleen_2;R_Spleen_3"
+
+CLASS_Kidney_vs_Lung = CLASS_Kidney + CLASS_Lung
+
+SAMPLE_join_Kidney_vs_Lung = "R_Kidney_1;R_Kidney_2;R_Kidney_3;R_Lung_1;R_Lung_2;R_Lung_3;"
+
+SAMPLE_group_join_Kidney_vs_Lung = "Kidney;Kidney;Kidney;Lung;Lung;Lung;"
+
+CLASS_Kidney_vs_Spleen = CLASS_Kidney + CLASS_Spleen
+
+SAMPLE_join_Kidney_vs_Spleen = "R_Kidney_1;R_Kidney_2;R_Kidney_3;R_Spleen_1;R_Spleen_2;R_Spleen_3;"
+
+SAMPLE_group_join_Kidney_vs_Spleen = "Kidney;Kidney;Kidney;Spleen;Spleen;Spleen;"
+
+CLASS_Lung_vs_Spleen = CLASS_Lung + CLASS_Spleen
+
+SAMPLE_join_Lung_vs_Spleen = "R_Lung_1;R_Lung_2;R_Lung_3;R_Spleen_1;R_Spleen_2;R_Spleen_3;"
+
+SAMPLE_group_join_Lung_vs_Spleen = "Lung;Lung;Lung;Spleen;Spleen;Spleen;"
+
+PAIRS = ["Kidney_vs_Lung", "Kidney_vs_Spleen", "Lung_vs_Spleen"]
+
+
+
+
+PROJECT_NAME = "R_hppRNA_data"
+
+WORKFLOW_NAME = "Tophat_Cufflink_Cuffdiff"
+
+WORKING_FOLDER = "/data/hppRNA_data"
+
+HPPRNA_SOFTWARE_FOLDER = "/data/hppRNA_software"
+
+ADAPTER_SEQUENCE = "AGATCGGAAGAGC"
+
+ASSEMBLY_VERSION = "mm10"
+
+GATK_FOLDER = "/data/hppRNA_software/GATK"
+
+
+
+GTF = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/mRNA_lncRNA.gtf"
+
+MAP_FILE = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/mRNA_lncRNA.transcript_to_gene.txt"
+
+
+
+
+
+
+FASTQC_OUTPUT_FOLDER = WORKING_FOLDER + "/standard_results/FastQC"
+
+CONTAMINANT_LIST_FILE = HPPRNA_SOFTWARE_FOLDER + "/FastQC/Configuration/contaminant_list.txt"
+
+ADAPTER_LIST_FILE = HPPRNA_SOFTWARE_FOLDER + "/FastQC/Configuration/adapter_list.txt"
+
+PRINSEQ_LITE_FILE = HPPRNA_SOFTWARE_FOLDER + "/prinseq-lite-0.20.4/prinseq-lite.pl"
+
+WIGTOBIGWIG = HPPRNA_SOFTWARE_FOLDER + "/wig2bigwig/wigToBigWig"
+
+CHROM_SIZES = HPPRNA_SOFTWARE_FOLDER + "/wig2bigwig/" + ASSEMBLY_VERSION + ".chrom.sizes"
+
+GENOME_FA_FILE = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/genome.fa"
+
+REPEAT_GTF = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/repeats.gtf"
+
+TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE = WORKING_FOLDER + "/standard_results/" + WORKFLOW_NAME + "/Index/" + ASSEMBLY_VERSION
+
+TOPHAT_LNCRNA_INDEX_FILE = WORKING_FOLDER + "/standard_results/lncRNA_denovo/lncRNA_detection/Index/" + ASSEMBLY_VERSION
+
+EXTRACT_UNIQUE = HPPRNA_SOFTWARE_FOLDER + "/BlackOPs_v1.06/perl/extract_unique.pl"
+
+FUSIONCATCHER_DATA_FOLDER = HPPRNA_SOFTWARE_FOLDER + "/FusionCatcher/fusioncatcher/data/mus_musculus/"
+
+THREADS = 15
+
+TOPHAT_MATE_INNER_DIST = 50
+
+TOPHAT_MATE_STD_DEV = 20
+
+TOPHAT_CUFFLINKS_CUFFDIFF_LIBRARY_TYPE = "fr-unstranded"
+
+SUBREAD_MINFRAGLENGTH = 50
+
+SUBREAD_MAXFRAGLENGTH = 600
+
+SUBREAD_PE_ORIENTATION = "fr"
+
+FEATURECOUNTS_STRANDSPECIFIC = "0"
+
+BOWTIE_HISAT_MININS = 0
+
+BOWTIE_HISAT_MAXINS = 800
+
+BOWTIE_HISAT_PE_ORIENTATION = "--fr"
+
+KALLISTO_L = 200
+
+KALLISTO_S = 20
+
+RSEM_FRAGMENT_LENGTH_MIN = 1
+
+RSEM_FRAGMENT_LENGTH_MAX = 1000
+
+RSEM_FRAGMENT_LENGTH_MEAN = -1
+
+RSEM_FRAGMENT_LENGTH_SD = 0
+
+RSEM_FORWARD_PROB = 0.5
+
+BOWTIE_HISAT_NOFW_NORC = " "
+
+EXPRESS_ORIENTATION = " "
+
+DCC_STRAND = "-N"
+
+
+
+
+
+rule all:
+    input:
+        expand("{work_folder}/standard_results/Raw_FASTQ/{sample}.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}_fastqc.zip", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}_fastqc.html", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Processed_FASTQ/{sample}.adapt.qc.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}.adapt.qc_fastqc.zip", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}.adapt.qc_fastqc.html", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Fasta/{sample}.adapt.qc.collapser.fasta", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}_thout/accepted_hits.bam", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}_thout/align_summary.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}_align_summary.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.rmdup.bam", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam.bai", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}_clout/genes.fpkm_tracking", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}_clout/isoforms.fpkm_tracking", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/cufflink/{sample}.genes.fpkm_tracking", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/cufflink_isoform/{sample}.isoforms.fpkm_tracking", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{pair}_diff_out/gene_exp.diff", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, pair = PAIRS),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{pair}_diff_out/isoform_exp.diff", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, pair = PAIRS),
+        expand("{work_folder}/standard_results/{workflow}/DEG/{project}.{workflow}.{pair}.gene.DEG.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME, pair = PAIRS),
+        expand("{work_folder}/standard_results/{workflow}/DEG/{project}.{workflow}.{pair}.transcript.DEG.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME, pair = PAIRS),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/cuffdiff/{pair}.gene_exp.diff", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, pair = PAIRS),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/cuffdiff_isoform/{pair}.isoform_exp.diff", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, pair = PAIRS),
+        expand("{work_folder}/standard_results/{workflow}/Gene_expression_matrix/{project}.{workflow}.gene.FPKM.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.FPKM.clean.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Gene_expression_matrix/{project}.{workflow}.transcript.FPKM.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/NGS_plot/NGSplot.{sample}.genebody.avgprof.pdf", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/NGS_plot/NGSplot.{sample}.genebody.heatmap.pdf", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/NGS_plot/NGSplot.{sample}.genebody.zip", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Bigwig/{sample}.bw", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.FPKM.clean.heatmap.R", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.FPKM.clean.txt.1.heatmap.pdf", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.FPKM.clean.PCA.R", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.FPKM.clean.txt.1.matrix.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.FPKM.clean.txt.1.PCA.pdf", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.FPKM.clean.txt.1.rotation.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME)
+
+rule rename_fastq:
+        input:
+                expand("{work_folder}/{sample}.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_1)
+        output:
+                expand("{work_folder}/standard_results/Raw_FASTQ/{sample}.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2)
+        run:
+                shell("mkdir -p {WORKING_FOLDER}/standard_results")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Raw_FASTQ")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Processed_FASTQ")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Fasta")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/FastQC")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/SNP")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Fusion_gene")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Index")
+                for i in range(len(SAMPLES_1)):
+                    single_in = "".join(["{WORKING_FOLDER}/", SAMPLES_1[i], ".fastq"])
+                    single_out = "".join(["{WORKING_FOLDER}/standard_results/Raw_FASTQ/", SAMPLES_2[i], ".fastq"])
+                    cmd_single = " ".join(["cp", single_in, single_out])
+                    shell(cmd_single)
+
+
+
+rule fastqc_fisrt:
+    input:
+        "{WORKING_FOLDER}/standard_results/Raw_FASTQ/{smp}.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}_fastqc.zip",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}_fastqc.html"
+    threads: THREADS
+    shell: """
+           fastqc -o {FASTQC_OUTPUT_FOLDER} --contaminants {CONTAMINANT_LIST_FILE} --adapters {ADAPTER_LIST_FILE} --threads {threads} {input}
+           """
+
+
+
+rule cutadapt:
+    input:
+        "{WORKING_FOLDER}/standard_results/Raw_FASTQ/{smp}.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.fastq"
+    shell: """
+           cutadapt -a {ADAPTER_SEQUENCE} -m 20 -o {output} {input}
+           """
+
+
+
+rule fastq_quality_filter:
+    input:
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.qc.fastq"
+    shell: """
+           fastq_quality_filter -q 20 -p 50 -Q 33 -i {input} -o {output}
+           """
+
+
+
+rule fastqc_second:
+    input:
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.qc.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}.adapt.qc_fastqc.zip",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}.adapt.qc_fastqc.html"
+    threads: THREADS
+    shell: """
+           fastqc -o {FASTQC_OUTPUT_FOLDER} --contaminants {CONTAMINANT_LIST_FILE} --adapters {ADAPTER_LIST_FILE} --threads {threads} {input}
+           """
+
+
+
+rule fastx_collapser:
+    input:
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.qc.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/Fasta/{smp}.adapt.qc.collapser.fasta"
+    shell: """
+           fastx_collapser -Q 33 -v -i {input} -o {output}
+           """
+
+
+
+
+rule bowtie2_build:
+    input:
+        GENOME_FA_FILE
+    output:
+        fa="{TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE}.fa",
+        index_1="{TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE}.1.bt2",
+        index_2="{TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE}.2.bt2",
+        index_3="{TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE}.3.bt2",
+        index_4="{TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE}.4.bt2",
+        index_5="{TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE}.rev.1.bt2",
+        index_6="{TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE}.rev.2.bt2"
+    threads: THREADS
+    shell: """
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Index
+           cp {input} {output.fa}
+           bowtie2-build --threads {threads} {output.fa} {TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE}
+           """
+
+
+
+
+rule tophat2:
+    input:
+        fastq="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.qc.fastq",
+        index_1=expand("{index_file}.1.bt2", index_file = TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE),
+        index_2=expand("{index_file}.2.bt2", index_file = TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE),
+        index_3=expand("{index_file}.3.bt2", index_file = TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE),
+        index_4=expand("{index_file}.4.bt2", index_file = TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE),
+        index_5=expand("{index_file}.rev.1.bt2", index_file = TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE),
+        index_6=expand("{index_file}.rev.2.bt2", index_file = TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE)
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}_thout/accepted_hits.bam",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}_thout/align_summary.txt"
+    threads: THREADS
+    shell: """
+           tophat2 -p {threads} --library-type {TOPHAT_CUFFLINKS_CUFFDIFF_LIBRARY_TYPE} -G {GTF} -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{wildcards.smp}_thout --no-novel-juncs {TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE} {input.fastq}
+           """
+
+
+
+
+rule copy_summary:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}_thout/align_summary.txt"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}_align_summary.txt"
+    shell: """
+           cp {input} {output}
+           """
+
+
+
+rule sort_bam:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}_thout/accepted_hits.bam"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.bam"
+    shell: """
+           samtools sort -o {output} {input}
+           """
+
+
+
+
+rule rmdup_bam:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.bam"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.rmdup.bam"
+    shell: """
+           samtools rmdup -s {input} {output}
+           """
+
+
+
+
+rule bam2sam:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.bam"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.sam"
+    shell: """
+           samtools view -h {input} > {output}
+           """
+
+
+
+rule select_unique_mapping:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.sam"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.sam"
+    shell: """
+           perl {EXTRACT_UNIQUE} --input_sam {input} --output {output} --aligner T
+           """
+
+
+
+rule sam2bam:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.sam"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam"
+    shell: """
+           samtools view -S -b -o {output} {input}
+           """
+
+
+
+rule index_bam:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam.bai"
+    shell: """
+           samtools index {input}
+           """
+
+
+
+rule cufflinks:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}_clout/genes.fpkm_tracking",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}_clout/isoforms.fpkm_tracking"
+    threads: THREADS
+    shell: """
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/cufflink
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/cufflink_isoform
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/cuffdiff
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/cuffdiff_isoform
+           cufflinks -p {threads} --library-type {TOPHAT_CUFFLINKS_CUFFDIFF_LIBRARY_TYPE} -G {GTF} -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{wildcards.smp}_clout {input}
+           """
+
+
+
+rule copy_fpkm:
+    input:
+        genes="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}_clout/genes.fpkm_tracking",
+        isoforms="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}_clout/isoforms.fpkm_tracking"
+    output:
+        genes="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/cufflink/{smp}.genes.fpkm_tracking",
+        isoforms="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/cufflink_isoform/{smp}.isoforms.fpkm_tracking"
+    shell: """
+           cp {input.genes} {output.genes}
+           cp {input.isoforms} {output.isoforms}
+           """
+
+
+
+
+
+
+rule cuffdiff_Kidney_vs_Lung:
+    input:
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam", work_folder = WORKING_FOLDER, sample = CLASS_Kidney_vs_Lung, workflow = WORKFLOW_NAME)
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/Kidney_vs_Lung_diff_out/gene_exp.diff",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/Kidney_vs_Lung_diff_out/isoform_exp.diff"
+    threads: THREADS
+    run:
+        classes = [",".join(expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample=cls)) for cls in (CLASS_Kidney, CLASS_Lung)]
+        shell("cuffdiff -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/Kidney_vs_Lung_diff_out -p {THREADS} --library-type {TOPHAT_CUFFLINKS_CUFFDIFF_LIBRARY_TYPE} -L Kidney,Lung {GTF} {classes[0]} {classes[1]}")
+
+
+rule cuffdiff_Kidney_vs_Spleen:
+    input:
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam", work_folder = WORKING_FOLDER, sample = CLASS_Kidney_vs_Spleen, workflow = WORKFLOW_NAME)
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/Kidney_vs_Spleen_diff_out/gene_exp.diff",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/Kidney_vs_Spleen_diff_out/isoform_exp.diff"
+    threads: THREADS
+    run:
+        classes = [",".join(expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample=cls)) for cls in (CLASS_Kidney, CLASS_Spleen)]
+        shell("cuffdiff -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/Kidney_vs_Spleen_diff_out -p {THREADS} --library-type {TOPHAT_CUFFLINKS_CUFFDIFF_LIBRARY_TYPE} -L Kidney,Spleen {GTF} {classes[0]} {classes[1]}")
+
+
+rule cuffdiff_Lung_vs_Spleen:
+    input:
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam", work_folder = WORKING_FOLDER, sample = CLASS_Lung_vs_Spleen, workflow = WORKFLOW_NAME)
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/Lung_vs_Spleen_diff_out/gene_exp.diff",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/Lung_vs_Spleen_diff_out/isoform_exp.diff"
+    threads: THREADS
+    run:
+        classes = [",".join(expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample=cls)) for cls in (CLASS_Lung, CLASS_Spleen)]
+        shell("cuffdiff -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/Lung_vs_Spleen_diff_out -p {THREADS} --library-type {TOPHAT_CUFFLINKS_CUFFDIFF_LIBRARY_TYPE} -L Lung,Spleen {GTF} {classes[0]} {classes[1]}")
+
+
+
+rule copy_cuffdiff:
+    input:
+        gene="{work_folder}/standard_results/{workflow}/Processed_BAM/{pair}_diff_out/gene_exp.diff",
+        isoform="{work_folder}/standard_results/{workflow}/Processed_BAM/{pair}_diff_out/isoform_exp.diff"
+    output:
+        gene_1="{work_folder}/standard_results/{workflow}/DEG/" + PROJECT_NAME + ".{workflow}.{pair}.gene.DEG.txt",
+        transcript_1="{work_folder}/standard_results/{workflow}/DEG/" + PROJECT_NAME + ".{workflow}.{pair}.transcript.DEG.txt",
+        gene_2="{work_folder}/standard_results/{workflow}/Processed_BAM/cuffdiff/{pair}.gene_exp.diff",
+        transcript_2="{work_folder}/standard_results/{workflow}/Processed_BAM/cuffdiff_isoform/{pair}.isoform_exp.diff"
+    shell: """
+           cp {input.gene} {output.gene_1}
+           cp {input.isoform} {output.transcript_1}
+           cp {input.gene} {output.gene_2}
+           cp {input.isoform} {output.transcript_2}
+           """
+
+
+
+rule perl_gene_level:
+    input:
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/cufflink/{sample}.genes.fpkm_tracking", work_folder = WORKING_FOLDER, sample = SAMPLES_2, workflow = WORKFLOW_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/cuffdiff/{pair}.gene_exp.diff", work_folder = WORKING_FOLDER, pair = PAIRS, workflow = WORKFLOW_NAME)
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.txt",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.txt"
+    shell: """
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/combine_cufflinks_results_new.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/cufflink -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cufflink.combine
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/combine_cuffdiff_results_new.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/cuffdiff -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff.combine
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/combine_cuffdiff_cufflink_new.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff.combine -j {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cufflink.combine -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink.combine
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/classify_result_new_new.pl -i {GTF} -j {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink.combine -o1 {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink.combine.class -o2 {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink.combine.signature
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/only_pc.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink.combine.class -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink.combine.class.pc
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/only_FPKM.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink.combine.class.pc -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.txt
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/clean_FPKM.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.txt -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.txt
+           """
+
+
+
+rule perl_isoform_level:
+    input:
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/cufflink_isoform/{sample}.isoforms.fpkm_tracking", work_folder = WORKING_FOLDER, sample = SAMPLES_2, workflow = WORKFLOW_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/cuffdiff_isoform/{pair}.isoform_exp.diff", work_folder = WORKING_FOLDER, pair = PAIRS, workflow = WORKFLOW_NAME)
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.{WORKFLOW_NAME}.transcript.FPKM.txt"
+    shell: """
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/combine_cufflinks_isoform_results_new.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/cufflink_isoform -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cufflink_isoform.combine
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/combine_cuffdiff_results_new.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/cuffdiff_isoform -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_isoform.combine
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/combine_cuffdiff_cufflink_isoform_new.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_isoform.combine -j {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cufflink_isoform.combine -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink_isoform.combine
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/classify_result_new_new_isoform.pl -i {GTF} -j {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink_isoform.combine -o1 {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink_isoform.combine.class -o2 {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink_isoform.combine.signature
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/only_pc.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink_isoform.combine.class -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink_isoform.combine.class.pc
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/only_FPKM_isoform.pl -i {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.cuffdiff_cufflink_isoform.combine.class.pc -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.{WORKFLOW_NAME}.transcript.FPKM.txt
+           """
+
+
+
+rule ngs_plot:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot/NGSplot.{smp}.genebody.avgprof.pdf",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot/NGSplot.{smp}.genebody.heatmap.pdf",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot/NGSplot.{smp}.genebody.zip"
+    threads: THREADS
+    shell: """
+           ngs.plot.r -G {ASSEMBLY_VERSION} -R genebody -C {input} -O {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot/NGSplot.{wildcards.smp}.genebody -T {wildcards.smp} -L 3000 -RB 0.05 -F rnaseq
+           """
+
+
+
+rule bam2wig:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig/{smp}.wig.gz"
+    shell: """
+           samtools mpileup -BQ0 {input} | perl -ne 'BEGIN{{print "track type=wiggle_0 name={wildcards.smp} maxHeightPixels=64:64:11 color=31,120,180 visibility=full\n"}};($c, $start, undef, $depth) = split; if ($c ne $lastC) {{ print "variableStep chrom=$c\n"; }};$lastC=$c;next unless $. % 5 ==0;print "$start\t$depth\n" unless $depth<3;' | gzip -c > {output}
+           """
+
+
+
+rule wig2wig2:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig/{smp}.wig.gz"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig/{smp}.wig.2.gz"
+    shell: """
+           zcat {input} | sed '1d' | gzip -c > {output}
+           """
+
+
+
+rule wig22bw:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig/{smp}.wig.2.gz"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig/{smp}.bw"
+    shell: """
+           {WIGTOBIGWIG} {input} {CHROM_SIZES} {output}
+           """
+
+
+
+rule heatmap:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.txt"
+    output:
+        R="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.heatmap.R",
+        pdf="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.txt.1.heatmap.pdf"
+    shell: """
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/generate_heatmap_Rscript.pl -i {PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.txt -d {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster -o {output.R}
+           R --slave --vanilla < {output.R}
+           """
+
+
+
+rule pca:
+    input:
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.txt"
+    output:
+        R="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.PCA.R",
+        matrix="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.txt.1.matrix.txt",
+        pdf="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.txt.1.PCA.pdf",
+        rotation="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.txt.1.rotation.txt"
+    shell: """
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/generate_PCA_Rscript.pl -i {PROJECT_NAME}.{WORKFLOW_NAME}.gene.FPKM.clean.txt -d {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster -o {output.R}
+           R --slave --vanilla < {output.R}
+           """
+
+
+

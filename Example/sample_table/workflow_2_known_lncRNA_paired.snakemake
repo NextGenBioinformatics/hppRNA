@@ -1,0 +1,461 @@
+
+
+
+SAMPLES_1 = ["ERR315477", "ERR315455", "ERR315432", "ERR315352", "ERR315456", "ERR315391"]
+
+SAMPLES_2 = ["R_brain_3b", "R_brain_3c", "R_brain_a", "R_testis_7a", "R_testis_7b", "R_testis_7c"]
+
+SAMPLE_join = "R_brain_3b;R_brain_3c;R_brain_a;R_testis_7a;R_testis_7b;R_testis_7c;"
+
+SAMPLE_group_join = "brain;brain;brain;testis;testis;testis;"
+
+
+
+
+CLASS_testis = ["R_testis_7a", "R_testis_7b", "R_testis_7c"]
+
+CLASS_testis_2 = "R_testis_7a;R_testis_7b;R_testis_7c"
+
+CLASS_brain = ["R_brain_3b", "R_brain_3c", "R_brain_a"]
+
+CLASS_brain_2 = "R_brain_3b;R_brain_3c;R_brain_a"
+
+CLASS_testis_vs_brain = CLASS_testis + CLASS_brain
+
+SAMPLE_join_testis_vs_brain = "R_testis_7a;R_testis_7b;R_testis_7c;R_brain_3b;R_brain_3c;R_brain_a;"
+
+SAMPLE_group_join_testis_vs_brain = "testis;testis;testis;brain;brain;brain;"
+
+PAIRS = ["testis_vs_brain"]
+
+
+
+
+PROJECT_NAME = "R_hppRNA_data"
+
+WORKFLOW_NAME = "Subread_featureCounts_DESeq2"
+
+WORKING_FOLDER = "/data/hppRNA_data"
+
+HPPRNA_SOFTWARE_FOLDER = "/data/hppRNA_software"
+
+ADAPTER_SEQUENCE = "AGATCGGAAGAGC"
+
+ASSEMBLY_VERSION = "hg19"
+
+GATK_FOLDER = "/data/hppRNA_software/GATK"
+
+
+
+GTF = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/mRNA_lncRNA.gtf"
+
+MAP_FILE = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/mRNA_lncRNA.transcript_to_gene.txt"
+
+
+
+
+
+
+FASTQC_OUTPUT_FOLDER = WORKING_FOLDER + "/standard_results/FastQC"
+
+CONTAMINANT_LIST_FILE = HPPRNA_SOFTWARE_FOLDER + "/FastQC/Configuration/contaminant_list.txt"
+
+ADAPTER_LIST_FILE = HPPRNA_SOFTWARE_FOLDER + "/FastQC/Configuration/adapter_list.txt"
+
+PRINSEQ_LITE_FILE = HPPRNA_SOFTWARE_FOLDER + "/prinseq-lite-0.20.4/prinseq-lite.pl"
+
+WIGTOBIGWIG = HPPRNA_SOFTWARE_FOLDER + "/wig2bigwig/wigToBigWig"
+
+CHROM_SIZES = HPPRNA_SOFTWARE_FOLDER + "/wig2bigwig/" + ASSEMBLY_VERSION + ".chrom.sizes"
+
+GENOME_FA_FILE = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/genome.fa"
+
+REPEAT_GTF = HPPRNA_SOFTWARE_FOLDER + "/hppRNA_genome/" + ASSEMBLY_VERSION + "/repeats.gtf"
+
+TOPHAT_CUFFLINK_CUFFDIFF_INDEX_FILE = WORKING_FOLDER + "/standard_results/" + WORKFLOW_NAME + "/Index/" + ASSEMBLY_VERSION
+
+TOPHAT_LNCRNA_INDEX_FILE = WORKING_FOLDER + "/standard_results/lncRNA_denovo/lncRNA_detection/Index/" + ASSEMBLY_VERSION
+
+EXTRACT_UNIQUE = HPPRNA_SOFTWARE_FOLDER + "/BlackOPs_v1.06/perl/extract_unique.pl"
+
+FUSIONCATCHER_DATA_FOLDER = HPPRNA_SOFTWARE_FOLDER + "/FusionCatcher/fusioncatcher/data/current/"
+
+THREADS = 15
+
+TOPHAT_MATE_INNER_DIST = 50
+
+TOPHAT_MATE_STD_DEV = 20
+
+TOPHAT_CUFFLINKS_CUFFDIFF_LIBRARY_TYPE = "fr-unstranded"
+
+SUBREAD_MINFRAGLENGTH = 50
+
+SUBREAD_MAXFRAGLENGTH = 600
+
+SUBREAD_PE_ORIENTATION = "fr"
+
+FEATURECOUNTS_STRANDSPECIFIC = "0"
+
+BOWTIE_HISAT_MININS = 0
+
+BOWTIE_HISAT_MAXINS = 800
+
+BOWTIE_HISAT_PE_ORIENTATION = "--fr"
+
+KALLISTO_L = 200
+
+KALLISTO_S = 20
+
+RSEM_FRAGMENT_LENGTH_MIN = 1
+
+RSEM_FRAGMENT_LENGTH_MAX = 1000
+
+RSEM_FRAGMENT_LENGTH_MEAN = -1
+
+RSEM_FRAGMENT_LENGTH_SD = 0
+
+RSEM_FORWARD_PROB = 0.5
+
+BOWTIE_HISAT_NOFW_NORC = " "
+
+EXPRESS_ORIENTATION = " "
+
+DCC_STRAND = "-N"
+
+
+
+
+
+rule all:
+    input:
+        expand("{work_folder}/standard_results/Raw_FASTQ/{sample}.R1.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Raw_FASTQ/{sample}.R2.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}.R1_fastqc.zip", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}.R1_fastqc.html", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}.R2_fastqc.zip", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}.R2_fastqc.html", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Processed_FASTQ/{sample}_1.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Processed_FASTQ/{sample}_2.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}_1_fastqc.zip", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}_1_fastqc.html", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}_2_fastqc.zip", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/FastQC/{sample}_2_fastqc.html", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Fasta/{sample}_1.collapser.fasta", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/Fasta/{sample}_2.collapser.fasta", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam.bai", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Gene_expression_matrix/{project}.{workflow}.gene.counts.csv", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Gene_expression_matrix/{project}.{workflow}.gene.counts.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Gene_expression_matrix/{project}.{workflow}.gene.RPKM.csv", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Gene_expression_matrix/{project}.{workflow}.gene.RPKM.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/DEG/{project}.{workflow}.{pair}.DESeq2.csv", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME, pair = PAIRS),
+        expand("{work_folder}/standard_results/{workflow}/DEG/{project}.{workflow}.{pair}.DESeq2.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME, pair = PAIRS),
+        expand("{work_folder}/standard_results/{workflow}/NGS_plot/NGSplot.{sample}.genebody.avgprof.pdf", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/NGS_plot/NGSplot.{sample}.genebody.heatmap.pdf", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/NGS_plot/NGSplot.{sample}.genebody.zip", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Bigwig/{sample}.bw", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.RPKM.clean.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.RPKM.clean.heatmap.R", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.RPKM.clean.txt.1.heatmap.pdf", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.RPKM.clean.PCA.R", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.RPKM.clean.txt.1.matrix.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.RPKM.clean.txt.1.PCA.pdf", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME),
+        expand("{work_folder}/standard_results/{workflow}/Cluster/{project}.{workflow}.gene.RPKM.clean.txt.1.rotation.txt", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, project = PROJECT_NAME)
+
+
+
+
+rule rename_fastq:
+        input:
+                R1=expand("{work_folder}/{sample}.R1.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_1), 
+                R2=expand("{work_folder}/{sample}.R2.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_1)
+        output:
+                R1=expand("{work_folder}/standard_results/Raw_FASTQ/{sample}.R1.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2),
+                R2=expand("{work_folder}/standard_results/Raw_FASTQ/{sample}.R2.fastq", work_folder = WORKING_FOLDER, sample = SAMPLES_2)
+        run:
+                shell("mkdir -p {WORKING_FOLDER}/standard_results")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Raw_FASTQ")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Processed_FASTQ")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Fasta")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/FastQC")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/SNP")
+                shell("mkdir -p {WORKING_FOLDER}/standard_results/Fusion_gene")
+                for i in range(len(SAMPLES_1)):
+                    left_in = "".join(["{WORKING_FOLDER}/", SAMPLES_1[i], ".R1.fastq"])
+                    right_in = "".join(["{WORKING_FOLDER}/", SAMPLES_1[i], ".R2.fastq"])
+                    left_out = "".join(["{WORKING_FOLDER}/standard_results/Raw_FASTQ/", SAMPLES_2[i], ".R1.fastq"])
+                    right_out = "".join(["{WORKING_FOLDER}/standard_results/Raw_FASTQ/", SAMPLES_2[i], ".R2.fastq"])
+                    cmd_left = " ".join(["cp", left_in, left_out])
+                    cmd_right = " ".join(["cp", right_in, right_out])
+                    shell(cmd_left)
+                    shell(cmd_right)
+
+
+
+rule fastqc_fisrt:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Raw_FASTQ/{smp}.R1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Raw_FASTQ/{smp}.R2.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}.R1_fastqc.zip",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}.R1_fastqc.html",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}.R2_fastqc.zip",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}.R2_fastqc.html"
+    threads: THREADS
+    shell: """
+           fastqc -o {FASTQC_OUTPUT_FOLDER} --contaminants {CONTAMINANT_LIST_FILE} --adapters {ADAPTER_LIST_FILE} --threads {threads} {input.R1}
+           fastqc -o {FASTQC_OUTPUT_FOLDER} --contaminants {CONTAMINANT_LIST_FILE} --adapters {ADAPTER_LIST_FILE} --threads {threads} {input.R2}
+    """
+
+
+
+rule cutadapt:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Raw_FASTQ/{smp}.R1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Raw_FASTQ/{smp}.R2.fastq"
+    output:
+        R1="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.R1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.R2.fastq"
+    shell: """
+           cutadapt -a {ADAPTER_SEQUENCE} -A {ADAPTER_SEQUENCE} -m 20 -o {output.R1} -p {output.R2} {input.R1} {input.R2}
+           """
+
+
+
+rule prinseq:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.R1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}.adapt.R2.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_1.fastq",
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_2.fastq",
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_1_singletons.fastq",
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_2_singletons.fastq"
+    shell: """
+           perl {PRINSEQ_LITE_FILE} -trim_qual_left 20 -trim_qual_right 20 -min_len 20 -min_qual_mean 20 -ns_max_n 2 -out_format 3 -no_qual_header -fastq {input.R1} -fastq2 {input.R2} -out_good {WORKING_FOLDER}/standard_results/Processed_FASTQ/{wildcards.smp} -out_bad null
+           """
+
+
+
+rule fastqc_second:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_2.fastq"
+    output:
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}_1_fastqc.zip",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}_1_fastqc.html",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}_2_fastqc.zip",
+        "{WORKING_FOLDER}/standard_results/FastQC/{smp}_2_fastqc.html"
+    threads: THREADS
+    shell: """
+           fastqc -o {FASTQC_OUTPUT_FOLDER} --contaminants {CONTAMINANT_LIST_FILE} --adapters {ADAPTER_LIST_FILE} --threads {threads} {input.R1}
+           fastqc -o {FASTQC_OUTPUT_FOLDER} --contaminants {CONTAMINANT_LIST_FILE} --adapters {ADAPTER_LIST_FILE} --threads {threads} {input.R2}
+           """
+
+
+
+rule fastx_collapser:
+    input:
+        R1="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_1.fastq",
+        R2="{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_2.fastq"
+    output:
+        R1="{WORKING_FOLDER}/standard_results/Fasta/{smp}_1.collapser.fasta",
+        R2="{WORKING_FOLDER}/standard_results/Fasta/{smp}_2.collapser.fasta",
+    shell: """
+           fastx_collapser -Q 33 -v -i {input.R1} -o {output.R1}
+           fastx_collapser -Q 33 -v -i {input.R2} -o {output.R2}
+           """
+
+
+
+
+rule build_index:
+    input:
+         expand("{software}/hppRNA_genome/{assembly}/genome.fa", software = HPPRNA_SOFTWARE_FOLDER, assembly = ASSEMBLY_VERSION),
+         expand("{software}/my_R/{workflow}.buildindex.R", software = HPPRNA_SOFTWARE_FOLDER, workflow = WORKFLOW_NAME)
+    output:
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Index/{ASSEMBLY_VERSION}.00.b.array",
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Index/{ASSEMBLY_VERSION}.00.b.tab",
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Index/{ASSEMBLY_VERSION}.reads"
+    shell: """
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster
+           mkdir -p {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Index
+           R --slave --vanilla --args "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Index/{ASSEMBLY_VERSION}" "{HPPRNA_SOFTWARE_FOLDER}/hppRNA_genome/{ASSEMBLY_VERSION}/genome.fa" < {HPPRNA_SOFTWARE_FOLDER}/my_R/{WORKFLOW_NAME}.buildindex.R
+           """
+
+
+
+
+rule align:
+    input:
+        expand("{work_folder}/standard_results/{workflow}/Index/{assembly}.00.b.array", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, assembly = ASSEMBLY_VERSION),
+        expand("{work_folder}/standard_results/{workflow}/Index/{assembly}.00.b.tab", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, assembly = ASSEMBLY_VERSION),
+        expand("{work_folder}/standard_results/{workflow}/Index/{assembly}.reads", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, assembly = ASSEMBLY_VERSION),
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_1.fastq",
+        "{WORKING_FOLDER}/standard_results/Processed_FASTQ/{smp}_2.fastq",
+        expand("{software}/my_R/{workflow}.align.R", software = HPPRNA_SOFTWARE_FOLDER, workflow = WORKFLOW_NAME)
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.unique.bam"
+    shell: """
+         R --slave --vanilla --args Paired-End {wildcards.smp} {WORKING_FOLDER}/standard_results {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Index/{ASSEMBLY_VERSION} {SUBREAD_MINFRAGLENGTH} {SUBREAD_MAXFRAGLENGTH} {SUBREAD_PE_ORIENTATION} < {HPPRNA_SOFTWARE_FOLDER}/my_R/{WORKFLOW_NAME}.align.R
+           """
+
+
+
+
+rule sort_bam:
+    input:
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.unique.bam"
+    output:
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam"
+    shell: """
+           samtools sort -o {output} {input}
+           """
+
+
+
+rule index_bam:
+    input:
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam"
+    output:
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam.bai"
+    shell: """
+           samtools index {input}
+           """
+
+
+
+
+rule feature_counts:
+    input:
+          GTF,
+          expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = SAMPLES_2)
+    output:
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.counts.csv",
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.counts.txt",
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.csv",
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.txt"
+    threads: THREADS
+    shell: """
+           R --slave --vanilla --args Paired-End {WORKING_FOLDER}/standard_results {GTF} "{SAMPLE_join}" {PROJECT_NAME} {threads} {FEATURECOUNTS_STRANDSPECIFIC} {SUBREAD_MINFRAGLENGTH} {SUBREAD_MAXFRAGLENGTH} < {HPPRNA_SOFTWARE_FOLDER}/my_R/{WORKFLOW_NAME}.featureCounts.R
+           """
+
+
+
+
+
+
+rule deseq2_testis_vs_brain:
+    input:
+        expand("{work_folder}/standard_results/{workflow}/Processed_BAM/{sample}.sorted.unique.bam", work_folder = WORKING_FOLDER, workflow = WORKFLOW_NAME, sample = CLASS_testis_vs_brain),
+        GTF
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG/{PROJECT_NAME}.{WORKFLOW_NAME}.testis_vs_brain.col.csv",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG/{PROJECT_NAME}.{WORKFLOW_NAME}.testis_vs_brain.DESeq2.csv",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG/{PROJECT_NAME}.{WORKFLOW_NAME}.testis_vs_brain.DESeq2.txt",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG/{PROJECT_NAME}.{WORKFLOW_NAME}.testis_vs_brain.gene.counts.csv",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG/{PROJECT_NAME}.{WORKFLOW_NAME}.testis_vs_brain.gene.counts.txt",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG/{PROJECT_NAME}.{WORKFLOW_NAME}.testis_vs_brain.gene.RPKM.csv",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG/{PROJECT_NAME}.{WORKFLOW_NAME}.testis_vs_brain.gene.RPKM.txt"
+    shell: """
+           perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/generate_DESeq2_configure.pl -c1 testis -c2 brain -b1 "{CLASS_testis_2}" -b2 "{CLASS_brain_2}" -o {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/DEG/{PROJECT_NAME}.{WORKFLOW_NAME}.testis_vs_brain.col.csv
+           R --slave --vanilla --args Paired-End testis brain "{CLASS_testis_2}" "{CLASS_brain_2}" {GTF} {WORKING_FOLDER}/standard_results {PROJECT_NAME} < {HPPRNA_SOFTWARE_FOLDER}/my_R/{WORKFLOW_NAME}.DESeq2.R
+           """
+
+
+
+rule ngs_plot:
+    input:
+        bam="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam",
+        bai="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam.bai"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot/NGSplot.{smp}.genebody.avgprof.pdf",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot/NGSplot.{smp}.genebody.heatmap.pdf",
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot/NGSplot.{smp}.genebody.zip"
+    shell: """
+           ngs.plot.r -G {ASSEMBLY_VERSION} -R genebody -C {input.bam} -O {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/NGS_plot/NGSplot.{wildcards.smp}.genebody -T {wildcards.smp} -L 3000 -RB 0.05 -F rnaseq
+           """
+
+
+
+rule bam2wig:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Processed_BAM/{smp}.sorted.unique.bam"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig/{smp}.wig.gz"
+    shell: """
+           samtools mpileup -BQ0 {input} | perl -ne 'BEGIN{{print "track type=wiggle_0 name={wildcards.smp} maxHeightPixels=64:64:11 color=31,120,180 visibility=full\n"}};($c, $start, undef, $depth) = split; if ($c ne $lastC) {{ print "variableStep chrom=$c\n"; }};$lastC=$c;next unless $. % 5 ==0;print "$start\t$depth\n" unless $depth<3;' | gzip -c > {output}
+           """
+
+
+
+rule wig2wig2:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig/{smp}.wig.gz"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig/{smp}.wig.2.gz"
+    shell: """
+           zcat {input} | sed '1d' | gzip -c > {output}
+           """
+
+
+
+rule wig22bw:
+    input:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig/{smp}.wig.2.gz"
+    output:
+        "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Bigwig/{smp}.bw"
+    shell: """
+           {WIGTOBIGWIG} {input} {CHROM_SIZES} {output}
+           """
+
+
+
+rule prepare_rpkm:
+    input:
+         perl=expand("{software}/my_perl/clean_RPKM_{workflow}.pl", software = HPPRNA_SOFTWARE_FOLDER, workflow = WORKFLOW_NAME),
+         txt="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Gene_expression_matrix/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.txt"
+    output:
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.txt"
+    shell: """
+           perl {input.perl} -i {input.txt} -o {output}
+           """
+
+
+
+rule heatmap:
+    input:
+         expand("{software}/my_perl/generate_heatmap_Rscript.pl", software = HPPRNA_SOFTWARE_FOLDER),
+         "{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.txt"
+    output:
+         R="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.heatmap.R",
+         pdf="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.txt.1.heatmap.pdf"
+    shell: """
+         perl {HPPRNA_SOFTWARE_FOLDER}/my_perl/generate_heatmap_Rscript.pl -i {PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.txt -d {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster -o {output.R}
+         R --slave --vanilla < {output.R}
+           """
+
+
+
+rule pca:
+    input:
+         txt="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.txt",
+         perl=expand("{software}/my_perl/generate_PCA_Rscript.pl", software = HPPRNA_SOFTWARE_FOLDER)
+    output:
+         R="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.PCA.R",
+         matrix="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.txt.1.matrix.txt",
+         pdf="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.txt.1.PCA.pdf",
+         rotation="{WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster/{PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.txt.1.rotation.txt"
+    shell: """
+           perl {input.perl} -i {PROJECT_NAME}.{WORKFLOW_NAME}.gene.RPKM.clean.txt -d {WORKING_FOLDER}/standard_results/{WORKFLOW_NAME}/Cluster -o {output.R}
+           R --slave --vanilla < {output.R}
+           """
+
+
+
