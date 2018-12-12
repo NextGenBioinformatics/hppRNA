@@ -12,6 +12,7 @@ The first version handles protein-coding genes, lncRNAs and circRNAs and include
 * (6) HISAT - StringTie - Ballgown.
 
 Please cite the following paper when using this package:
+
 Dapeng Wang. hppRNA—a Snakemake-based handy parameter-free pipeline for RNA-Seq analysis of numerous samples. Briefings in Bioinformatics, Volume 19, Issue 4, 20 July 2018, Pages 622–626.
 
 
